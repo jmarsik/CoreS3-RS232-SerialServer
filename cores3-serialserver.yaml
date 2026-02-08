@@ -55,6 +55,8 @@ wifi:
 
 captive_portal:
 
+improv_serial:
+
 logger:
   level: DEBUG
   # baud_rate: 0
