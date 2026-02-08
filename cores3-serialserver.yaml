@@ -1,0 +1,117 @@
+substitutions:
+  devicename: cores3-serialserver
+
+esphome:
+  name: $devicename
+  name_add_mac_suffix: true
+  platformio_options:
+    build_flags:
+      # Set core Arduino log level (5 = high)
+      - -D CORE_DEBUG_LEVEL=0
+      # Set Serial log level (6 = high)
+      - -D ARDUINO_LOG_LEVEL=0
+  libraries:
+    - m5stack/M5GFX@^0.2.17
+    - m5stack/M5Unified@^0.2.10
+
+esp32:
+  board: m5stack-cores3
+  variant: esp32s3
+  cpu_frequency: 240MHz
+  flash_size: 16MB
+  framework:
+    type: arduino
+    version: latest
+    sdkconfig_options:
+      # increase stack because we use a lot of components and a web server
+      CONFIG_ARDUINO_LOOP_STACK_SIZE: "32768"
+
+external_components:
+  - source: github://oxan/esphome-stream-server
+  - source:
+      type: git
+      url: https://github.com/m5stack/M5CoreS3-Esphome
+    components: [ board_m5cores3 ]
+    refresh: 0s
+
+board_m5cores3:
+
+uart:
+  id: uart_rs232
+  tx_pin: GPIO17
+  rx_pin: GPIO18
+  baud_rate: 115200
+
+stream_server:
+  uart_id: uart_rs232
+  port: 6638
+  buffer_size: 256
+
+wifi:
+  reboot_timeout: 15min
+  output_power: 15dB
+  power_save_mode: none
+  ap:
+
+captive_portal:
+
+logger:
+  level: DEBUG
+  # baud_rate: 0
+  logs:
+    sensor: WARN
+    text_sensor: WARN
+
+api:
+  reboot_timeout: 0s
+
+ota:
+  - platform: esphome
+
+web_server:
+  include_internal: false
+  version: 3
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+select:
+  - platform: template
+    id: baud_rate_select
+    name: Baud rate
+    options:
+      - "2400"
+      - "4800"
+      - "9600"
+      - "19200"
+      - "38400"
+      - "57600"
+      - "115200"
+    initial_option: "115200"
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: |-
+          id(uart_rs232).flush();
+          uint32_t new_baud_rate = stoi(x);
+          if (id(uart_rs232).get_baud_rate() != new_baud_rate) {
+            ESP_LOGD("change_baud_rate", "Changing baud rate from %i to %i",id(uart_rs232).get_baud_rate(), new_baud_rate);
+            id(uart_rs232).set_baud_rate(new_baud_rate);
+            id(uart_rs232).load_settings();
+          }
+
+binary_sensor:
+  - platform: stream_server
+    connected:
+      name: Client connected
+
+sensor:
+  - platform: stream_server
+    connection_count:
+      name: Number of connections
+
+packages:
+  wifi: !include packages/common/wifi.yaml
+  uptime: !include packages/common/uptime.yaml
+  debug: !include packages/common/debug.yaml

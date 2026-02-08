@@ -1,0 +1,20 @@
+[workspace]
+authors = ["Jakub Marsik <jmarsik@fullvent.cz>"]
+channels = ["conda-forge"]
+name = "CoreS3-RS232-SerialServer"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+compile = "esphome compile cores3-serialserver.yaml"
+upload = "esphome upload cores3-serialserver.yaml"
+run = "esphome run cores3-serialserver.yaml"
+logs = "esphome logs cores3-serialserver.yaml"
+clean = "esphome clean cores3-serialserver.yaml"
+
+[dependencies]
+python = "3.13.*"
+pip = ">=26.0.1,<27"
+
+[pypi-dependencies]
+esphome = "==2025.12.7"

@@ -1,6 +1,5 @@
 # ESPHome
 /.esphome/
-/.platformio/
 /secrets.yaml
 
 # Pixi environments
