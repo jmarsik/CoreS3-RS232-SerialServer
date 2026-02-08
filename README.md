@@ -46,6 +46,10 @@ On first boot (or when no saved WiFi network is available), the device starts a 
 
 Once the device connects to WiFi, connect any TCP client to `<device-ip>:6638`. Data sent over TCP is forwarded to the RS232 port and vice versa.
 
+Some settings related to processing of the data (like echo, line endings, special characters, clipboard handling, etc.) depend on the device connected to the serial port of the RS232 port and the client software used to connect to the TCP port. The serial server itself is a transparent bridge and does not modify the data in any way.
+
+Below are example connection instructions for common TCP client software and usual connected devices (like serial consoles of network equipment, microcontrollers, etc.):
+
 ### socat
 
 ```bash
@@ -58,7 +62,8 @@ socat -,rawer,escape=0x04 TCP:<device-ip>:6638
 1. Set **Connection type** to **Raw**
 2. Enter the device IP as **Host Name**
 3. Set **Port** to **6638**
-4. Click **Open**
+4. Go to **Terminal** category and change **Local echo** and **Local line editing** to **Force off**
+5. Click **Open**
 
 ## Web Server
 
