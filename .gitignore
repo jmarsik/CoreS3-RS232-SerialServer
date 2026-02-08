@@ -1,0 +1,8 @@
+# ESPHome
+/.esphome/
+/.platformio/
+/secrets.yaml
+
+# Pixi environments
+.pixi/*
+!.pixi/config.toml
