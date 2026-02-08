@@ -42,6 +42,12 @@ pixi run clean
 
 On first boot (or when no saved WiFi network is available), the device starts a captive portal AP. Connect to it with your phone or laptop, then configure your WiFi credentials through the portal. The credentials are saved and used on subsequent boots.
 
+The AP and captive portal should be also started if the device fails to connect to the saved WiFi network (e.g. due to network not available), after 90 seconds. You can use it to reconfigure WiFi settings.
+
+The Improv via serial is also supported for WiFi configuration. To use it, connect to the serial port (provided via USB) and use [ESPHome Web](https://web.esphome.io/) tool to change WiFi settings.
+
+```
+
 ## Connecting to the Serial Port
 
 Once the device connects to WiFi, connect any TCP client to `<device-ip>:6638`. Data sent over TCP is forwarded to the RS232 port and vice versa.
